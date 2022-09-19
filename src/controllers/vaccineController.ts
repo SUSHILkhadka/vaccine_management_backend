@@ -1,112 +1,94 @@
-import { NextFunction, Response } from "express";
-import { StatusCodes } from "http-status-codes";
-import { IRequestWithTokenData } from "../domains/IRequestWithTokenData";
-import CustomError from "../middlewares/CustomError";
-import * as VaccineService from "../services/vaccineService";
-import contactSchema from "../validations/contactSchema";
+import { NextFunction, Request, Response } from 'express';
+import { StatusCodes } from 'http-status-codes';
+import CustomError from '../misc/CustomError';
+import * as VaccineService from '../services/vaccineService';
 import formValidator from '../validations/formValidator';
+import vaccineSchema from '../validations/vaccineSchema';
 
-export const createContact = (
-  req: IRequestWithTokenData,
+export const createVaccine = (
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const {
     name,
-    email,
-    workNumber,
-    homeNumber,
-    phoneNumber,
-    photograph,
-    favourite,
+    description,
+    numberOfDoses,
+    releaseDate,
+    photoUrl,
+    isMandatory,
   } = req.body;
+  formValidator(req.body, vaccineSchema);
 
-  formValidator(req.body, contactSchema);
-  const userId = req.id;
-  if (!userId) {
-    return next(
-      new CustomError("invalid access token", StatusCodes.BAD_REQUEST)
-    );
-  }
-  VaccineService.createContact({
+  VaccineService.createVaccine({
     name,
-    email,
-    workNumber,
-    homeNumber,
-    phoneNumber,
-    photograph,
-    favourite,
-    userId,
+    description,
+    numberOfDoses,
+    releaseDate,
+    photoUrl,
+    isMandatory,
   })
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };
 
-export const getAllContactsByUserId = (
-  req: IRequestWithTokenData,
+export const getAllVaccines = (
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const userId = req.id;
-  if (!userId) {
-    return next(
-      new CustomError("invalid access token", StatusCodes.BAD_REQUEST)
-    );
-  }
-  VaccineService.getAllContactsByUserId(userId)
+  VaccineService.getAllVaccines()
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };
-export const updateContact = (
-  req: IRequestWithTokenData,
+
+export const updateVaccine = (
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
   const {
     name,
-    email,
-    workNumber,
-    homeNumber,
-    phoneNumber,
-    photograph,
-    favourite,
+    description,
+    numberOfDoses,
+    releaseDate,
+    photoUrl,
+    isMandatory,
   } = req.body;
-  Validator(req.body, contactSchema);
-  const userId = req.id;
-  const id = req.params.contactId;
-  if (!userId || !id) {
+  formValidator(req.body, vaccineSchema);
+  const id = req.params.vaccineId;
+  if (!id) {
     return next(
-      new CustomError("invalid access token", StatusCodes.BAD_REQUEST)
+      new CustomError('vaccine id is missing', StatusCodes.BAD_REQUEST)
     );
   }
-  VaccineService.updateContact({
+
+  VaccineService.updateVaccine({
     name,
-    email,
-    workNumber,
-    homeNumber,
-    phoneNumber,
-    photograph,
-    favourite,
-    userId,
+    description,
+    numberOfDoses,
+    releaseDate,
+    photoUrl,
+    isMandatory,
     id: +id,
   })
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };
 
-export const deleteContact = (
-  req: IRequestWithTokenData,
+export const deleteVaccine = (
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const userId = req.id;
-  const id = req.params.contactId;
-  if (!userId || !id) {
+  const id = req.params.vaccineId;
+  if (!id) {
     return next(
-      new CustomError("invalid access token", StatusCodes.BAD_REQUEST)
+      new CustomError('vaccine id is missing', StatusCodes.BAD_REQUEST)
     );
   }
-  VaccineService.deleteContact(userId, +id)
+
+  VaccineService.deleteVaccine(+id)
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };

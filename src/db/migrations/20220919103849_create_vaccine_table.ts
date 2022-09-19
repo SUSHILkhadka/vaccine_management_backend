@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<void> {
     table.increments('id');
     table.string('name').notNullable();
     table.string('description');
-    table.string('number_of_doses');
+    table.integer('number_of_doses');
     table.date('release_date');
     table.string('photo_url');
     table.boolean('is_mandatory').defaultTo(false);
