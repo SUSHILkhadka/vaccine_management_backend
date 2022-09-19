@@ -1,6 +1,6 @@
 export interface IAllergy {
   id: number;
   name: string;
-  patientId: number;
+  vaccineId: number;
 }
 export type IAllergyToInsert = Omit<IAllergy, 'id'>;

@@ -7,19 +7,22 @@ import CustomError from '../misc/CustomError';
  * schema: is yup object schema with constraints for validation defined
  * throws error
  */
- const formValidator = (inputs: any, schema: yup.ObjectSchema<any>): string[] => {
-    try {
-        schema.validateSync(inputs, {
-          abortEarly: false,
-        });
-        return [];
-      } catch (err: any) {
-        let allCombinedError = '';
-        err.inner.forEach((error: any) => {
-          allCombinedError += error.message + ', ';
-        });
-        throw new CustomError(allCombinedError, StatusCodes.BAD_REQUEST);
-      }
+const formValidator = (
+  inputs: any,
+  schema: yup.ObjectSchema<any>
+): string[] => {
+  try {
+    schema.validateSync(inputs, {
+      abortEarly: false,
+    });
+    return [];
+  } catch (err: any) {
+    let allCombinedError = '';
+    err.inner.forEach((error: any) => {
+      allCombinedError += error.message + ', ';
+    });
+    throw new CustomError(allCombinedError, StatusCodes.BAD_REQUEST);
+  }
 };
 
 export default formValidator;
