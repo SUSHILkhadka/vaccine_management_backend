@@ -5,11 +5,11 @@ import CustomError from '../misc/CustomError';
 import * as UserService from '../services/userService';
 import editUserSchema from '../validations/editUserSchema';
 import formValidator from '../validations/formValidator';
-import registerSchema from '../validations/signupSchema';
+import signupSchema from '../validations/signupSchema';
 
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
   const { name, email, password } = req.body;
-  formValidator(req.body, registerSchema);
+  formValidator(req.body, signupSchema);
 
   if (!name || !email || !password) {
     throw new CustomError(
