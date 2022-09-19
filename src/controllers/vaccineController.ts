@@ -56,10 +56,14 @@ export const updateVaccine = (
     isMandatory,
   } = req.body;
   formValidator(req.body, vaccineSchema);
-  const id = req.params.vaccineId;
-  if (!id) {
+
+  const id = +req.params.vaccineId;
+  if (isNaN(id)) {
     return next(
-      new CustomError('vaccine id is missing', StatusCodes.BAD_REQUEST)
+      new CustomError(
+        'vaccine id is not a valid number',
+        StatusCodes.BAD_REQUEST
+      )
     );
   }
 
@@ -81,14 +85,17 @@ export const deleteVaccine = (
   res: Response,
   next: NextFunction
 ) => {
-  const id = req.params.vaccineId;
-  if (!id) {
+  const id = +req.params.vaccineId;
+  if (isNaN(id)) {
     return next(
-      new CustomError('vaccine id is missing', StatusCodes.BAD_REQUEST)
+      new CustomError(
+        'vaccine id is not a valid number',
+        StatusCodes.BAD_REQUEST
+      )
     );
   }
 
-  VaccineService.deleteVaccine(+id)
+  VaccineService.deleteVaccine(id)
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };

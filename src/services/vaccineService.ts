@@ -54,7 +54,7 @@ export const updateVaccine = async (
 export const deleteVaccine = async (
   id: number
 ): Promise<ISuccess<IVaccine>> => {
-  logger.info('updating vaccine byid');
+  logger.info('deleting vaccine by id');
   const vaccine = await VaccineModel.deleteVaccine(id);
   if (!vaccine) {
     throw new CustomError(

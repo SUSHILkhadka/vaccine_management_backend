@@ -2,7 +2,7 @@ import db from '../db/db';
 import { IAllergy, IAllergyToInsert } from '../domains/IAllergy';
 
 class User {
-  private static table = 'allergies';
+  private static table = 'allergy';
 
   public static async addAllergy(
     allergyToInsert: IAllergyToInsert
@@ -13,21 +13,21 @@ class User {
     return allergies[0];
   }
 
-  public static async getAllAllergiesByPatientId(
-    patientId: number
+  public static async getAllAllergiesByVaccineId(
+    vaccineId: number
   ): Promise<IAllergy[]> {
     const allergies = await db(this.table)
-      .where({ patientId: patientId })
+      .where({ vaccineId: vaccineId })
       .returning('*');
     return allergies;
   }
 
   public static async updateAllergy(allergy: IAllergy): Promise<IAllergy> {
-    const updatedPatient = await db(this.table)
-      .where({ patientId: allergy.patientId, id: allergy.id })
+    const updatedAllergy = await db(this.table)
+      .where({ vaccineId: allergy.vaccineId, id: allergy.id })
       .update(allergy)
       .returning('*');
-    return updatedPatient[0];
+    return updatedAllergy[0];
   }
   public static async deleteAllergy(id: number): Promise<IAllergy> {
     const deletedAllergy = await db(this.table)
