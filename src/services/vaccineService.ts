@@ -35,7 +35,7 @@ export const getAllVaccines = async (): Promise<ISuccess<IVaccine[]>> => {
 export const updateVaccine = async (
   vaccine: IVaccine
 ): Promise<ISuccess<IVaccine>> => {
-  logger.info('updating contact by userId from token data and id');
+  logger.info('updating vaccine by id');
   const updatedVaccine = await VaccineModel.updateVaccine(vaccine);
   if (!updatedVaccine) {
     throw new CustomError(
@@ -44,28 +44,28 @@ export const updateVaccine = async (
     );
   }
 
-  logger.info('updated Vaccine by userId and id successfully');
+  logger.info('updated Vaccine by id');
   return {
     data: updatedVaccine,
-    message: 'updated Vaccine by userId and id successfully',
+    message: 'updated Vaccine by id',
   };
 };
 
 export const deleteVaccine = async (
   id: number
 ): Promise<ISuccess<IVaccine>> => {
-  logger.info('updating contact by userId from token data and id');
-  const contact = await VaccineModel.deleteVaccine(id);
-  if (!contact) {
+  logger.info('updating vaccine byid');
+  const vaccine = await VaccineModel.deleteVaccine(id);
+  if (!vaccine) {
     throw new CustomError(
-      'Couldnot delete the requested contact',
+      'Couldnot delete the requested vaccine',
       StatusCodes.NOT_FOUND
     );
   }
 
-  logger.info('deleted contacts by userId and id successfully');
+  logger.info('deleted vaccines by id');
   return {
-    data: contact,
-    message: 'deleted contact by userId and id successfully',
+    data: vaccine,
+    message: 'deleted vaccine by id',
   };
 };
