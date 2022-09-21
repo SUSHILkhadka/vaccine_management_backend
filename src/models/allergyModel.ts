@@ -1,8 +1,9 @@
+import { TABLE_NAME_ALLERGY } from '../constants/common';
 import db from '../db/db';
 import { IAllergy, IAllergyToInsert } from '../domains/IAllergy';
 
 class User {
-  private static table = 'allergy';
+  private static table = TABLE_NAME_ALLERGY;
 
   public static async addAllergy(
     allergyToInsert: IAllergyToInsert

@@ -1,7 +1,7 @@
 import { NextFunction, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
+import { IAllergyToInsert } from '../domains/IAllergy';
 import { IRequestWithTokenData } from '../domains/IRequestWithTokenData';
-import CustomError from '../misc/CustomError';
+import { InvalidAllergyIdInURL, InvalidVaccineIdInURL } from '../errors/errors';
 import * as AllergyService from '../services/allergyService';
 import allergySchema from '../validations/allergySchema';
 import formValidator from '../validations/formValidator';
@@ -11,13 +11,10 @@ export const addAllergy = (
   res: Response,
   next: NextFunction
 ) => {
-  const { name, vaccineId } = req.body;
-  formValidator(req.body, allergySchema);
+  const allergyFormData = req.body as IAllergyToInsert;
+  formValidator(allergyFormData, allergySchema);
 
-  AllergyService.addAllergy({
-    name,
-    vaccineId,
-  })
+  AllergyService.addAllergy(allergyFormData)
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };
@@ -27,7 +24,10 @@ export const getAllAllergiesByVaccineId = (
   res: Response,
   next: NextFunction
 ) => {
-  const vaccineId = req.params.vaccineId;
+  const vaccineId = +req.params.vaccineId;
+  if (isNaN(vaccineId)) {
+    return next(InvalidVaccineIdInURL);
+  }
   AllergyService.getAllAllergiesByVaccineId(+vaccineId)
     .then((data) => res.json(data))
     .catch((err) => next(err));
@@ -40,20 +40,14 @@ export const updateAllergy = (
 ) => {
   const id = +req.params.allergyId;
   if (isNaN(id)) {
-    return next(
-      new CustomError(
-        'allergy id is not a valid number',
-        StatusCodes.BAD_REQUEST
-      )
-    );
+    return next(InvalidAllergyIdInURL);
   }
 
-  const { name, vaccineId } = req.body;
-  formValidator(req.body, allergySchema);
+  const alleryFormData = req.body as IAllergyToInsert;
+  formValidator(alleryFormData, allergySchema);
 
   AllergyService.updateAllergy({
-    name,
-    vaccineId,
+    ...alleryFormData,
     id: +id,
   })
     .then((data) => res.json(data))
@@ -66,12 +60,7 @@ export const deleteAllergy = (
 ) => {
   const id = +req.params.allergyId;
   if (isNaN(id)) {
-    return next(
-      new CustomError(
-        'allergy id is not a valid number',
-        StatusCodes.BAD_REQUEST
-      )
-    );
+    return next(InvalidAllergyIdInURL);
   }
 
   AllergyService.deleteAllergy(+id)

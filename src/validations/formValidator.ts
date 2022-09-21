@@ -1,5 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
 import * as yup from 'yup';
+import { IAllergyToInsert } from '../domains/IAllergy';
+import { IUserToInsert, IUserToUpdate } from '../domains/IUser';
+import { IVaccineToInsert } from '../domains/IVaccine';
 import CustomError from '../misc/CustomError';
 
 /**
@@ -8,7 +11,7 @@ import CustomError from '../misc/CustomError';
  * throws error
  */
 const formValidator = (
-  inputs: any,
+  inputs: IUserToInsert | IUserToUpdate | IVaccineToInsert | IAllergyToInsert,
   schema: yup.ObjectSchema<any>
 ): string[] => {
   try {

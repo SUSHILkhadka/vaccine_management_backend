@@ -1,11 +1,12 @@
-import bcrypt from 'bcrypt';
-import StatusCodes from 'http-status-codes';
 import { ISuccess } from '../domains/ISuccess';
 import { IUser, IUserToInsert } from '../domains/IUser';
-import CustomError from '../misc/CustomError';
+import { InvaliCredentialsError } from '../errors/errors';
 import logger from '../misc/Logger';
 import UserModel from '../models/userModel';
-import { generatePasswordHash } from '../utils/passwordUtils';
+import {
+  comparePlainPasswordAndHash,
+  generatePasswordHash,
+} from '../utils/passwordUtils';
 
 export const createUser = async (
   userToInsert: IUserToInsert
@@ -31,8 +32,9 @@ export const getUserByEmail = async (
   logger.info('getting user by email');
   const user = await UserModel.getUserByEmail(email);
   if (!user) {
-    throw new CustomError("user account doesn't exists", StatusCodes.NOT_FOUND);
+    throw InvaliCredentialsError;
   }
+
   logger.info('got user by email successfully');
   return {
     data: user,
@@ -47,12 +49,12 @@ export const updateUser = async (
   logger.info('updating user');
 
   const userForCheck = await UserModel.getUserByEmail(user.email);
-  const isPasswordMatch = await bcrypt.compare(
+  const isPasswordMatch = await comparePlainPasswordAndHash(
     oldPassword,
     userForCheck.password
   );
   if (!isPasswordMatch) {
-    throw new CustomError('wrong password', StatusCodes.UNAUTHORIZED);
+    throw InvaliCredentialsError;
   }
 
   // entered correct old password for changing name or password or both
@@ -63,8 +65,8 @@ export const updateUser = async (
     ...user,
     password: passwordHash,
   });
-  logger.info('updated user successfully');
 
+  logger.info('updated user successfully');
   return {
     data: updatedUser,
     message: 'user updated successfully',

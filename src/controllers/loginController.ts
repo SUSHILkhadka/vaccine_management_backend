@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import CustomError from '../misc/CustomError';
+import { InvalidRefreshTokenError } from '../errors/errors';
 import * as LoginService from '../services/loginService';
 import formValidator from '../validations/formValidator';
 import signinSchema from '../validations/signinSchema';
@@ -26,7 +25,7 @@ export const getAccessToken = (
 ) => {
   const { refreshToken } = req.body;
   if (!refreshToken) {
-    throw new CustomError('invalid refresh token', StatusCodes.BAD_REQUEST);
+    throw InvalidRefreshTokenError;
   }
   LoginService.getAccessToken(refreshToken)
     .then((data) => res.json(data))
@@ -36,7 +35,7 @@ export const getAccessToken = (
 export const logout = (req: Request, res: Response, next: NextFunction) => {
   const { refreshToken } = req.body;
   if (!refreshToken) {
-    throw new CustomError('invalid refresh token', StatusCodes.OK);
+    throw InvalidRefreshTokenError;
   }
   LoginService.logout(refreshToken)
     .then((data) => res.json(data))

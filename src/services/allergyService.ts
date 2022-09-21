@@ -1,7 +1,6 @@
-import StatusCodes from 'http-status-codes';
 import { IAllergy, IAllergyToInsert } from '../domains/IAllergy';
 import { ISuccess } from '../domains/ISuccess';
-import CustomError from '../misc/CustomError';
+import { AllergyNotFoundError, EmptyAllergyListError } from '../errors/errors';
 import logger from '../misc/Logger';
 import AllergyModel from '../models/allergyModel';
 
@@ -23,7 +22,7 @@ export const getAllAllergiesByVaccineId = async (
   logger.info('fetching all allergies by vaccine id = ' + patientId);
   const allergies = await AllergyModel.getAllAllergiesByVaccineId(patientId);
   if (!allergies.length) {
-    throw new CustomError('allergies list is empty', StatusCodes.NOT_FOUND);
+    throw EmptyAllergyListError;
   }
 
   logger.info('allergy list by vaccine id fetched successfully ');
@@ -39,10 +38,7 @@ export const updateAllergy = async (
   logger.info('updating allergy  by id = ' + allergy.id);
   const updatedAllergy = await AllergyModel.updateAllergy(allergy);
   if (!updatedAllergy) {
-    throw new CustomError(
-      'allergy doesnot exist to edit',
-      StatusCodes.NOT_FOUND
-    );
+    throw AllergyNotFoundError;
   }
   logger.info('updated allergy by id successfully');
   return {
@@ -57,11 +53,9 @@ export const deleteAllergy = async (
   logger.info('deleting allergy by id = ' + id);
   const patient = await AllergyModel.deleteAllergy(id);
   if (!patient) {
-    throw new CustomError(
-      'allergy doesnot exist to delete',
-      StatusCodes.NOT_FOUND
-    );
+    throw AllergyNotFoundError;
   }
+
   logger.info('deleted allergy by id successfully');
   return {
     data: patient,
