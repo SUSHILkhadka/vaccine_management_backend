@@ -1,6 +1,6 @@
 # Description
 
-Nodejs and typescript starter template
+Vaccine management system backend application. It provides API functions to manage users and vaccine and its allergies information.
 
 ## How to run?
 

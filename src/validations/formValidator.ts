@@ -21,9 +21,13 @@ const formValidator = (
     return [];
   } catch (err: any) {
     let allCombinedError = '';
-    err.inner.forEach((error: any) => {
-      allCombinedError += error.message + ', ';
-    });
+
+    for (let i = 0; i < err.inner.lenght; i++) {
+      allCombinedError += err.inner[i].message;
+      if (i < err.inner.length - 1) allCombinedError += ', ';
+      else allCombinedError += '.';
+    }
+
     throw new CustomError(allCombinedError, StatusCodes.BAD_REQUEST);
   }
 };

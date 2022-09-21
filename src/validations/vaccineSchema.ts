@@ -5,11 +5,11 @@ const vaccineSchema = yup.object().shape({
   description: yup.string().trim().nullable(),
   numberOfDoses: yup
     .number()
-    .typeError('number of doses must be a number')
+    .typeError('Number of doses must be a number')
     .required('Number of doses is required'),
-  releaseDate: yup.date().typeError('release date must be a date').nullable(),
+  releaseDate: yup.date().typeError('Release date must be a date').nullable(),
   photoUrl: yup.string().nullable(),
-  isMandatory: yup.boolean().typeError('isMandatory should be boolean value'),
+  isMandatory: yup.boolean().typeError('Mandatory should be boolean value'),
 });
 
 export default vaccineSchema;

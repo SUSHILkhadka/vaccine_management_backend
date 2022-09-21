@@ -12,7 +12,7 @@ import RefreshTokenModel from '../models/refreshTokenModel';
 import { default as User, default as UserModel } from '../models/userModel';
 import { comparePlainPasswordAndHash } from '../utils/passwordUtils';
 import {
-  decryptTokenData,
+  decryptTokenDataFromRefreshToken,
   getAccessTokenUtils,
   getRefreshTokenUtils,
 } from '../utils/tokenUtils';
@@ -87,7 +87,7 @@ export const getAccessToken = async (
   }
 
   try {
-    const decryptedTokenData = decryptTokenData(refreshToken);
+    const decryptedTokenData = decryptTokenDataFromRefreshToken(refreshToken);
     const newAccessToken = getAccessTokenUtils(decryptedTokenData);
     return {
       data: decryptedTokenData,

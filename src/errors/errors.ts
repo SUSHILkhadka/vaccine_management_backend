@@ -12,7 +12,7 @@ export const InvalidRefreshTokenError = new CustomError(
 );
 
 export const InValidAccessTokenError = new CustomError(
-  'invalid access token',
+  'Invalid access token',
   StatusCodes.UNAUTHORIZED
 );
 
@@ -27,21 +27,21 @@ export const VaccineNotFoundError = new CustomError(
 );
 
 export const InvalidVaccineIdInURL = new CustomError(
-  'vaccine id is not a valid number',
+  'Vaccine id is not a valid number',
   StatusCodes.BAD_REQUEST
 );
 
 export const EmptyAllergyListError = new CustomError(
-  'allergies list is empty',
+  'Allergies list is empty',
   StatusCodes.NOT_FOUND
 );
 
 export const AllergyNotFoundError = new CustomError(
-  'allergy doesnot exist to edit',
+  'Allergy doesnot exist to edit',
   StatusCodes.NOT_FOUND
 );
 
 export const InvalidAllergyIdInURL = new CustomError(
-  'allergy id is not a valid number',
+  'Allergy id is not a valid number',
   StatusCodes.BAD_REQUEST
 );

@@ -16,6 +16,7 @@ export const addAllergy = async (
     message: 'new allergy created by vaccine id successfully',
   };
 };
+
 export const getAllAllergiesByVaccineId = async (
   patientId: number
 ): Promise<ISuccess<IAllergy[]>> => {
