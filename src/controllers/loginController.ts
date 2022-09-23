@@ -18,7 +18,7 @@ export const login = (req: Request, res: Response, next: NextFunction) => {
     .catch((err) => next(err));
 };
 
-export const getAccessToken = (
+export const getNewAccessTokenByRefreshToken = (
   req: Request,
   res: Response,
   next: NextFunction
@@ -27,7 +27,7 @@ export const getAccessToken = (
   if (!refreshToken) {
     throw InvalidRefreshTokenError;
   }
-  LoginService.getAccessToken(refreshToken)
+  LoginService.getNewAccessTokenByRefreshToken(refreshToken)
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };

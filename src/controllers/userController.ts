@@ -1,17 +1,30 @@
 import { NextFunction, Request, Response } from 'express';
 import { IRequestWithTokenData } from '../domains/IRequestWithTokenData';
-import { IUserToInsert, IUserToUpdate } from '../domains/IUser';
+import { IUserToUpdate } from '../domains/IUser';
 import { InValidAccessTokenError } from '../errors/errors';
 import * as UserService from '../services/userService';
+import { getSiginFormDataFromRequest } from '../utils/bodyParser';
 import editUserSchema from '../validations/editUserSchema';
-import formValidator from '../validations/formValidator';
+import formValidator, { keyValueValidator } from '../validations/formValidator';
 import signupSchema from '../validations/signupSchema';
 
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
-  const signinFormData = req.body as IUserToInsert;
+  const signinFormData = getSiginFormDataFromRequest(req);
   formValidator(signinFormData, signupSchema);
 
   UserService.createUser(signinFormData)
+    .then((data) => res.json(data))
+    .catch((err) => next(err));
+};
+
+export const checkIfEmailAlreadyExists = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { email } = req.body;
+  keyValueValidator('email', email, signupSchema);
+  UserService.checkIfEmailAlreadyExists(email)
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };

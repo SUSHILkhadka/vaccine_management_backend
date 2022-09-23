@@ -1,8 +1,8 @@
 import { NextFunction, Response } from 'express';
-import { IAllergyToInsert } from '../domains/IAllergy';
 import { IRequestWithTokenData } from '../domains/IRequestWithTokenData';
 import { InvalidAllergyIdInURL, InvalidVaccineIdInURL } from '../errors/errors';
 import * as AllergyService from '../services/allergyService';
+import { getAllergyDataFromRequest } from '../utils/bodyParser';
 import allergySchema from '../validations/allergySchema';
 import formValidator from '../validations/formValidator';
 
@@ -11,7 +11,7 @@ export const addAllergy = (
   res: Response,
   next: NextFunction
 ) => {
-  const allergyFormData = req.body as IAllergyToInsert;
+  const allergyFormData = getAllergyDataFromRequest(req);
   formValidator(allergyFormData, allergySchema);
 
   AllergyService.addAllergy(allergyFormData)
@@ -43,7 +43,7 @@ export const updateAllergy = (
     return next(InvalidAllergyIdInURL);
   }
 
-  const alleryFormData = req.body as IAllergyToInsert;
+  const alleryFormData = getAllergyDataFromRequest(req);
   formValidator(alleryFormData, allergySchema);
 
   AllergyService.updateAllergy({

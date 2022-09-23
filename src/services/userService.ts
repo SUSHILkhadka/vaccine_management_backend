@@ -11,6 +11,7 @@ import {
 export const createUser = async (
   userToInsert: IUserToInsert
 ): Promise<ISuccess<IUser>> => {
+  console.log('user to insert', userToInsert);
   const { password } = userToInsert;
   const passwordHash = await generatePasswordHash(password);
   logger.info('creating user');
@@ -38,6 +39,20 @@ export const getUserByEmail = async (
   logger.info('got user by email successfully');
   return {
     data: user,
+    message: 'user by email fetched successfully',
+  };
+};
+
+export const checkIfEmailAlreadyExists = async (
+  email: string
+): Promise<ISuccess<IUser>> => {
+  logger.info('getting user by email');
+  const user = await UserModel.getUserByEmail(email);
+  if (!user) {
+    throw InvaliCredentialsError;
+  }
+  logger.info('got user by email successfully');
+  return {
     message: 'user by email fetched successfully',
   };
 };

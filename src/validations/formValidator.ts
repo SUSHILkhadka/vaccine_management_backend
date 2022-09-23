@@ -32,4 +32,22 @@ const formValidator = (
   }
 };
 
+
+
+
+export const keyValueValidator = async (
+  key: string,
+  value: any,
+  schema: yup.ObjectSchema<any>
+) => {
+  try{
+  schema.validateSyncAt(key, { [key]: value });
+  }
+  catch(e:string| any){
+    throw new CustomError(e,StatusCodes.BAD_REQUEST)
+  }
+};
+
+
+
 export default formValidator;

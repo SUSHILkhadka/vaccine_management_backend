@@ -13,8 +13,8 @@ import { default as User, default as UserModel } from '../models/userModel';
 import { comparePlainPasswordAndHash } from '../utils/passwordUtils';
 import {
   decryptTokenDataFromRefreshToken,
-  getAccessTokenUtils,
-  getRefreshTokenUtils,
+  getAccessToken,
+  getRefreshToken,
 } from '../utils/tokenUtils';
 dotenv.config();
 
@@ -44,8 +44,8 @@ export const login = async (
     name: user.name,
     email: user.email,
   };
-  const accessToken = getAccessTokenUtils(tokenDataToBeEncrypted);
-  const refreshToken = getRefreshTokenUtils(tokenDataToBeEncrypted);
+  const accessToken = getAccessToken(tokenDataToBeEncrypted);
+  const refreshToken = getRefreshToken(tokenDataToBeEncrypted);
 
   //delete previous expired refresh token of userId
   await RefreshTokenModel.deleteExpiredRefreshTokenByUserId(user.id);
@@ -74,7 +74,7 @@ export const login = async (
  * @param refreshToken valid refreshtoken for getting new accesstoken after access toekn is expired
  * @returns new access token with new expiry time
  */
-export const getAccessToken = async (
+export const getNewAccessTokenByRefreshToken = async (
   refreshToken: string
 ): Promise<ITokens<User>> => {
   const refreshTokenFromDb = (await RefreshTokenModel.getRefreshTokenByToken(
@@ -88,7 +88,7 @@ export const getAccessToken = async (
 
   try {
     const decryptedTokenData = decryptTokenDataFromRefreshToken(refreshToken);
-    const newAccessToken = getAccessTokenUtils(decryptedTokenData);
+    const newAccessToken = getAccessToken(decryptedTokenData);
     return {
       data: decryptedTokenData,
       accessToken: newAccessToken,

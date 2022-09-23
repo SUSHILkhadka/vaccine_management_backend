@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { EXPIRY_TIME_ACCESS_TOKEN } from '../constants/common';
 import { IDataAtToken } from '../domains/IDataAtToken';
 
-export const getAccessTokenUtils = (tokenDataToBeEncrypted: IDataAtToken) => {
+export const getAccessToken = (tokenDataToBeEncrypted: IDataAtToken) => {
   const accessToken = jwt.sign(
     tokenDataToBeEncrypted,
     process.env.JWT_SECRET as string,
@@ -13,7 +13,7 @@ export const getAccessTokenUtils = (tokenDataToBeEncrypted: IDataAtToken) => {
   return accessToken;
 };
 
-export const getRefreshTokenUtils = (tokenDataToBeEncrypted: IDataAtToken) => {
+export const getRefreshToken = (tokenDataToBeEncrypted: IDataAtToken) => {
   const refreshToken = jwt.sign(
     tokenDataToBeEncrypted,
     process.env.JWT_TOKEN_SECRET as string
