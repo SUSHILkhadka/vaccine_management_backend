@@ -2,7 +2,7 @@ import * as yup from 'yup';
 
 const vaccineSchema = yup.object().shape({
   name: yup.string().trim().required('Name is required'),
-  description: yup.string().trim().nullable(),
+  // description: yup.string().trim().nullable(),
   numberOfDoses: yup
     .number()
     .typeError('Number of doses must be a number')

@@ -1,7 +1,10 @@
 import { NextFunction, Response } from 'express';
 import { IRequestWithTokenData } from '../domains/IRequestWithTokenData';
 import { InValidAccessTokenError } from '../errors/errors';
+import logger from '../misc/Logger';
 import { decryptedTokenDataFromAccessToken } from '../utils/tokenUtils';
+
+// import { decryptedTokenDataFromAccessToken } from '../utils/tokenUtils';
 /**
  *
  * @param req user Request with access token in header
@@ -20,10 +23,12 @@ const authenticate = async (
   try {
     const accessToken = req.headers.authorization.split(' ')[1];
     const dataAtToken = decryptedTokenDataFromAccessToken(accessToken);
+
     req.id = dataAtToken.id;
     req.email = dataAtToken.email;
     return next();
-  } catch {
+  } catch (e) {
+    logger.info('verification failed for jwt');
     return next(InValidAccessTokenError);
   }
 };

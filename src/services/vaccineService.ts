@@ -56,7 +56,7 @@ export const deleteVaccine = async (
     throw VaccineNotFoundError;
   }
 
-  logger.info('deleted vaccines by id');
+  logger.info('deleted vaccine by id');
   return {
     data: vaccine,
     message: 'deleted vaccine by id',

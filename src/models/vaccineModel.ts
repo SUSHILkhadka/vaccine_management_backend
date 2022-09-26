@@ -8,6 +8,7 @@ class Patient {
   public static async createVaccine(
     vaccineToInsert: IVaccineToInsert
   ): Promise<IVaccine> {
+    console.log(vaccineToInsert)
     const vaccine = await db(this.table).insert(vaccineToInsert).returning('*');
     return vaccine[0];
   }

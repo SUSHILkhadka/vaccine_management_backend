@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import { EXPIRY_TIME_REFRESH_TOKEN } from '../constants/common';
+import { IDataAtToken } from '../domains/IDataAtToken';
 import IRefreshToken from '../domains/IRefreshToken';
 import { ISuccess } from '../domains/ISuccess';
 import { ITokens } from '../domains/ITokens';
@@ -39,10 +40,13 @@ export const login = async (
   }
 
   //valid user
+  const expiryDateForRefreshToken = Date.now() + EXPIRY_TIME_REFRESH_TOKEN;
+
   const tokenDataToBeEncrypted = {
     id: user.id,
     name: user.name,
     email: user.email,
+    expiryDateForRefreshToken,
   };
   const accessToken = getAccessToken(tokenDataToBeEncrypted);
   const refreshToken = getRefreshToken(tokenDataToBeEncrypted);
@@ -51,7 +55,6 @@ export const login = async (
   await RefreshTokenModel.deleteExpiredRefreshTokenByUserId(user.id);
 
   //adding new refresh token to database
-  const expiryDateForRefreshToken = Date.now() + EXPIRY_TIME_REFRESH_TOKEN;
 
   await RefreshTokenModel.createRefreshToken({
     refreshToken,
@@ -64,7 +67,6 @@ export const login = async (
     data: user,
     accessToken,
     refreshToken,
-    expiresAtRefreshToken: expiryDateForRefreshToken,
     message: 'login successfully',
   };
 };
@@ -77,6 +79,7 @@ export const login = async (
 export const getNewAccessTokenByRefreshToken = async (
   refreshToken: string
 ): Promise<ITokens<User>> => {
+  logger.info('getting new access token');
   const refreshTokenFromDb = (await RefreshTokenModel.getRefreshTokenByToken(
     refreshToken
   )) as IRefreshToken;
@@ -86,19 +89,18 @@ export const getNewAccessTokenByRefreshToken = async (
     throw InvalidRefreshTokenError;
   }
 
-  try {
-    const decryptedTokenData = decryptTokenDataFromRefreshToken(refreshToken);
-    const newAccessToken = getAccessToken(decryptedTokenData);
-    return {
-      data: decryptedTokenData,
-      accessToken: newAccessToken,
-      refreshToken,
-      expiresAtRefreshToken: refreshTokenFromDb.expiresAt,
-      message: 'got new access token successfully',
-    };
-  } catch {
-    throw InvalidRefreshTokenError;
-  }
+  const decryptedTokenData = decryptTokenDataFromRefreshToken(
+    refreshToken
+  ) as IDataAtToken;
+  const newAccessToken = getAccessToken(decryptedTokenData);
+  logger.info('got new access token sucessfully');
+
+  return {
+    data: decryptedTokenData,
+    accessToken: newAccessToken,
+    refreshToken,
+    message: 'got new access token successfully',
+  };
 };
 
 /**
@@ -109,7 +111,11 @@ export const getNewAccessTokenByRefreshToken = async (
 export const logout = async (
   refreshToken: string
 ): Promise<ISuccess<IRefreshToken>> => {
+  logger.info('logging out');
+
   await RefreshTokenModel.deleteRefreshTokenByToken(refreshToken);
+  logger.info('logged out successfully');
+
   return {
     message: 'deleted refresh token successfully',
   };

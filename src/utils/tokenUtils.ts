@@ -22,17 +22,29 @@ export const getRefreshToken = (tokenDataToBeEncrypted: IDataAtToken) => {
 };
 
 export const decryptedTokenDataFromAccessToken = (accessToken: string) => {
-  const dataAtToken = jwt.verify(
+  const { id, name, email, expiryDateForRefreshToken } = jwt.verify(
     accessToken,
     process.env.JWT_SECRET as string
   ) as IDataAtToken;
-  return dataAtToken;
+  return {
+    id,
+    name,
+    email,
+    expiryDateForRefreshToken,
+  };
 };
 
-export const decryptTokenDataFromRefreshToken = (refreshToken: string) => {
-  const dataAtToken = jwt.verify(
+export const decryptTokenDataFromRefreshToken = (
+  refreshToken: string
+): IDataAtToken => {
+  const { id, name, email, expiryDateForRefreshToken } = jwt.verify(
     refreshToken,
     process.env.JWT_TOKEN_SECRET as string
   ) as IDataAtToken;
-  return dataAtToken;
+  return {
+    id,
+    name,
+    email,
+    expiryDateForRefreshToken,
+  };
 };
