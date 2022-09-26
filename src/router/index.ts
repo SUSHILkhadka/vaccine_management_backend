@@ -6,6 +6,7 @@ import signupRouter from './signupRouter';
 import checkEmailRouter from './checkEmailRouter';
 import tokenRouter from './tokenRouter';
 import uploadRouter from './uploadRouter';
+import userRouter from './userRouter';
 import vaccineRouter from './vaccineRouter';
 import allergyRouter from './allergyRouter';
 
@@ -18,6 +19,7 @@ router.use('/checkEmail', checkEmailRouter);
 router.use('/upload', uploadRouter);
 
 router.use(authenticate);
+router.use('/user', userRouter);
 router.use('/vaccine', vaccineRouter);
 router.use('/allergy', allergyRouter);
 

@@ -38,6 +38,7 @@ export const updateUser = (
   const id = req.id;
   const email = req.email;
   formValidator(req.body as IUserToUpdate, editUserSchema);
+
   if (!id || !email) {
     return next(InValidAccessTokenError);
   }

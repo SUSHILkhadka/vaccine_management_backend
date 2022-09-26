@@ -14,6 +14,8 @@ export const generatePasswordHash = async (
   return passwordHash;
 };
 
+
+
 export const comparePlainPasswordAndHash = async (
   plainPassword: string,
   hasedPassword: string

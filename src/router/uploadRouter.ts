@@ -26,7 +26,8 @@ async function uploadFiles(req: any, res: Response, next: NextFunction) {
     const filePath = req.files[0].path;
     logger.info('uploading file');
     const uploadResponse = await cloudinary.uploader.upload(filePath, {
-      upload_preset: 'contacts-photo',
+    //   upload_preset: 'contacts-photo',
+      upload_preset: 'vaccine',
     });
 
     fs.unlinkSync(filePath);
