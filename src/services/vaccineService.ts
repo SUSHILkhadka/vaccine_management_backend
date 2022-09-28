@@ -4,9 +4,7 @@ import { EmptyVaccineListError, VaccineNotFoundError } from '../errors/errors';
 import logger from '../misc/Logger';
 import VaccineModel from '../models/vaccineModel';
 
-export const createVaccine = async (
-  vaccineToInsert: IVaccineToInsert
-): Promise<ISuccess<IVaccine>> => {
+export const createVaccine = async (vaccineToInsert: IVaccineToInsert): Promise<ISuccess<IVaccine>> => {
   logger.info('creating vaccine');
   const vaccine = await VaccineModel.createVaccine(vaccineToInsert);
 
@@ -31,9 +29,7 @@ export const getAllVaccines = async (): Promise<ISuccess<IVaccine[]>> => {
   };
 };
 
-export const updateVaccine = async (
-  vaccine: IVaccine
-): Promise<ISuccess<IVaccine>> => {
+export const updateVaccine = async (vaccine: IVaccine): Promise<ISuccess<IVaccine>> => {
   logger.info('updating vaccine by id');
   const updatedVaccine = await VaccineModel.updateVaccine(vaccine);
   if (!updatedVaccine) {
@@ -47,9 +43,7 @@ export const updateVaccine = async (
   };
 };
 
-export const deleteVaccine = async (
-  id: number
-): Promise<ISuccess<IVaccine>> => {
+export const deleteVaccine = async (id: number): Promise<ISuccess<IVaccine>> => {
   logger.info('deleting vaccine by id');
   const vaccine = await VaccineModel.deleteVaccine(id);
   if (!vaccine) {

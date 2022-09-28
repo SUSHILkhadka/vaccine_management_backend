@@ -1,8 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { InvalidRefreshTokenError } from '../errors/errors';
 import * as LoginService from '../services/loginService';
-import formValidator from '../validations/formValidator';
-import signinSchema from '../validations/signinSchema';
 
 /**
  *
@@ -12,17 +10,12 @@ import signinSchema from '../validations/signinSchema';
  */
 export const login = (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body;
-  formValidator(req.body, signinSchema);
   LoginService.login(email, password)
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };
 
-export const getNewAccessTokenByRefreshToken = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getNewAccessTokenByRefreshToken = (req: Request, res: Response, next: NextFunction) => {
   const { refreshToken } = req.body;
   if (!refreshToken) {
     throw InvalidRefreshTokenError;

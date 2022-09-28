@@ -3,14 +3,9 @@ import { IUser, IUserToInsert } from '../domains/IUser';
 import { InvaliCredentialsError } from '../errors/errors';
 import logger from '../misc/Logger';
 import UserModel from '../models/userModel';
-import {
-  comparePlainPasswordAndHash,
-  generatePasswordHash,
-} from '../utils/passwordUtils';
+import { comparePlainPasswordAndHash, generatePasswordHash } from '../utils/passwordUtils';
 
-export const createUser = async (
-  userToInsert: IUserToInsert
-): Promise<ISuccess<IUser>> => {
+export const createUser = async (userToInsert: IUserToInsert): Promise<ISuccess<IUser>> => {
   console.log('user to insert', userToInsert);
   const { password } = userToInsert;
   const passwordHash = await generatePasswordHash(password);
@@ -27,9 +22,7 @@ export const createUser = async (
   };
 };
 
-export const getUserByEmail = async (
-  email: string
-): Promise<ISuccess<IUser>> => {
+export const getUserByEmail = async (email: string): Promise<ISuccess<IUser>> => {
   logger.info('getting user by email');
   const user = await UserModel.getUserByEmail(email);
   if (!user) {
@@ -43,9 +36,7 @@ export const getUserByEmail = async (
   };
 };
 
-export const checkIfEmailAlreadyExists = async (
-  email: string
-): Promise<ISuccess<IUser>> => {
+export const checkIfEmailAlreadyExists = async (email: string): Promise<ISuccess<IUser>> => {
   logger.info('getting user by email');
   const user = await UserModel.getUserByEmail(email);
   if (!user) {
@@ -57,17 +48,11 @@ export const checkIfEmailAlreadyExists = async (
   };
 };
 
-export const updateUser = async (
-  user: IUser,
-  oldPassword: string
-): Promise<ISuccess<IUser>> => {
+export const updateUser = async (user: IUser, oldPassword: string): Promise<ISuccess<IUser>> => {
   logger.info('updating user');
 
   const userForCheck = await UserModel.getUserByEmail(user.email);
-  const isPasswordMatch = await comparePlainPasswordAndHash(
-    oldPassword,
-    userForCheck.password
-  );
+  const isPasswordMatch = await comparePlainPasswordAndHash(oldPassword, userForCheck.password);
   if (!isPasswordMatch) {
     throw InvaliCredentialsError;
   }

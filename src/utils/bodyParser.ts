@@ -7,17 +7,8 @@ export const getSiginFormDataFromRequest = (req: Request): IUserToInsert => {
   return { name, email, password };
 };
 
-export const getVaccineDataFromRequest = (
-  req: Request
-): IVaccineToInsert => {
-  const {
-    name,
-    description,
-    numberOfDoses,
-    releaseDate,
-    photoUrl,
-    isMandatory,
-  } = req.body;
+export const getVaccineDataFromRequest = (req: Request): IVaccineToInsert => {
+  const { name, description, numberOfDoses, releaseDate, photoUrl, isMandatory } = req.body;
   return {
     name,
     description,
@@ -28,9 +19,7 @@ export const getVaccineDataFromRequest = (
   };
 };
 
-export const getAllergyDataFromRequest = (
-    req: Request
-  ): IAllergyToInsert => {
-    const { name, vaccineId }= req.body;
-    return { name, vaccineId };
-  };
+export const getAllergyDataFromRequest = (req: Request): IAllergyToInsert => {
+  const { name, vaccineId } = req.body;
+  return { name, vaccineId };
+};

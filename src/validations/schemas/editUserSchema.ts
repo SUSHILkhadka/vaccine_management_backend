@@ -8,8 +8,7 @@ const editUserSchema = yup.object().shape({
     .max(20, 'Password too long')
     .required('Password is required')
     .trim(),
-  oldPassword: yup
-    .string()
+  oldPassword: yup.string(),
 });
 
 export default editUserSchema;

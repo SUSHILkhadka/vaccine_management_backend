@@ -7,7 +7,7 @@ export interface IUser {
 
 export type IUserToInsert = Omit<IUser, 'id'>;
 
-export interface IUserToUpdate  {
+export interface IUserToUpdate {
   name: string;
   password: string;
   oldPassword: string;

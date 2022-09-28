@@ -30,11 +30,7 @@ const formValidator = (
   }
 };
 
-export const keyValueValidator = async (
-  key: string,
-  value: any,
-  schema: yup.ObjectSchema<any>
-) => {
+export const keyValueValidator = async (key: string, value: any, schema: yup.ObjectSchema<any>) => {
   try {
     schema.validateSyncAt(key, { [key]: value });
   } catch (e: string | any) {

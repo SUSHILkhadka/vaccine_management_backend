@@ -4,19 +4,12 @@ import { IDataAtToken } from '../domains/IDataAtToken';
 import IRefreshToken from '../domains/IRefreshToken';
 import { ISuccess } from '../domains/ISuccess';
 import { ITokens } from '../domains/ITokens';
-import {
-  InvaliCredentialsError,
-  InvalidRefreshTokenError,
-} from '../errors/errors';
+import { InvaliCredentialsError, InvalidRefreshTokenError } from '../errors/errors';
 import logger from '../misc/Logger';
 import RefreshTokenModel from '../models/refreshTokenModel';
 import { default as User, default as UserModel } from '../models/userModel';
 import { comparePlainPasswordAndHash } from '../utils/passwordUtils';
-import {
-  decryptTokenDataFromRefreshToken,
-  getAccessToken,
-  getRefreshToken,
-} from '../utils/tokenUtils';
+import { decryptTokenDataFromRefreshToken, getAccessToken, getRefreshToken } from '../utils/tokenUtils';
 dotenv.config();
 
 /**
@@ -25,16 +18,10 @@ dotenv.config();
  * @param password valid password as string
  * @returns compares password hash and given password, if correct, returns access token and refresh token
  */
-export const login = async (
-  email: string,
-  password: string
-): Promise<ITokens<User>> => {
+export const login = async (email: string, password: string): Promise<ITokens<User>> => {
   logger.info('logging in');
   const user = await UserModel.getUserByEmail(email);
-  const isPasswordMatch = await comparePlainPasswordAndHash(
-    password,
-    user.password
-  );
+  const isPasswordMatch = await comparePlainPasswordAndHash(password, user.password);
   if (!user || !isPasswordMatch) {
     throw InvaliCredentialsError;
   }
@@ -76,22 +63,19 @@ export const login = async (
  * @param refreshToken valid refreshtoken for getting new accesstoken after access toekn is expired
  * @returns new access token with new expiry time
  */
-export const getNewAccessTokenByRefreshToken = async (
-  refreshToken: string
-): Promise<ITokens<User>> => {
+export const getNewAccessTokenByRefreshToken = async (refreshToken: string): Promise<ITokens<User>> => {
   logger.info('getting new access token');
-  const refreshTokenFromDb = (await RefreshTokenModel.getRefreshTokenByToken(
-    refreshToken
-  )) as IRefreshToken;
+  const refreshTokenFromDb = (await RefreshTokenModel.getRefreshTokenByToken(refreshToken)) as IRefreshToken;
 
   if (!refreshTokenFromDb || +refreshTokenFromDb.expiresAt < Date.now()) {
     await RefreshTokenModel.deleteRefreshTokenByToken(refreshToken);
     throw InvalidRefreshTokenError;
   }
-
-  const decryptedTokenData = decryptTokenDataFromRefreshToken(
-    refreshToken
-  ) as IDataAtToken;
+  const decryptedTokenData = decryptTokenDataFromRefreshToken(refreshToken) as IDataAtToken;
+  if (decryptedTokenData.expiryDateForRefreshToken < Date.now()) {
+    await RefreshTokenModel.deleteRefreshTokenByToken(refreshToken);
+    throw InvalidRefreshTokenError;
+  }
   const newAccessToken = getAccessToken(decryptedTokenData);
   logger.info('got new access token sucessfully');
 
@@ -108,9 +92,7 @@ export const getNewAccessTokenByRefreshToken = async (
  * @param refreshToken current refresh token as string
  * @returns deletes refresh token from database and return deleted token
  */
-export const logout = async (
-  refreshToken: string
-): Promise<ISuccess<IRefreshToken>> => {
+export const logout = async (refreshToken: string): Promise<ISuccess<IRefreshToken>> => {
   logger.info('logging out');
 
   await RefreshTokenModel.deleteRefreshTokenByToken(refreshToken);

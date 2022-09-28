@@ -13,7 +13,9 @@
     "migrate:make": "knex migrate:make --migrations-directory src/db/migrations -x ts",
     "migrate": "knex migrate:latest --knexfile src/db/knexfile.ts",
     "migrate:prod": "knex migrate:latest --knexfile dist/db/knexfile.js",
-    "rollback": "knex migrate:rollback --knexfile src/db/knexfile.ts"
+    "rollback": "knex migrate:rollback --knexfile src/db/knexfile.ts",
+    "git":"npm run prettify && git add . && git commit -m",
+    "git:rename":"npm run prettify && git add . && git commit --amend -m"
   },
   "keywords": [
     "typescript",

@@ -4,9 +4,7 @@ import { AllergyNotFoundError, EmptyAllergyListError } from '../errors/errors';
 import logger from '../misc/Logger';
 import AllergyModel from '../models/allergyModel';
 
-export const addAllergy = async (
-  allergyToInsert: IAllergyToInsert
-): Promise<ISuccess<IAllergy>> => {
+export const addAllergy = async (allergyToInsert: IAllergyToInsert): Promise<ISuccess<IAllergy>> => {
   logger.info('creating new allergy by vaccine id');
   const allergy = await AllergyModel.addAllergy(allergyToInsert);
 
@@ -17,9 +15,7 @@ export const addAllergy = async (
   };
 };
 
-export const getAllAllergiesByVaccineId = async (
-  patientId: number
-): Promise<ISuccess<IAllergy[]>> => {
+export const getAllAllergiesByVaccineId = async (patientId: number): Promise<ISuccess<IAllergy[]>> => {
   logger.info('fetching all allergies by vaccine id = ' + patientId);
   const allergies = await AllergyModel.getAllAllergiesByVaccineId(patientId);
   if (!allergies.length) {
@@ -33,9 +29,7 @@ export const getAllAllergiesByVaccineId = async (
   };
 };
 
-export const updateAllergy = async (
-  allergy: IAllergy
-): Promise<ISuccess<IAllergy>> => {
+export const updateAllergy = async (allergy: IAllergy): Promise<ISuccess<IAllergy>> => {
   logger.info('updating allergy  by id = ' + allergy.id);
   const updatedAllergy = await AllergyModel.updateAllergy(allergy);
   if (!updatedAllergy) {
@@ -48,9 +42,7 @@ export const updateAllergy = async (
   };
 };
 
-export const deleteAllergy = async (
-  id: number
-): Promise<ISuccess<IAllergy>> => {
+export const deleteAllergy = async (id: number): Promise<ISuccess<IAllergy>> => {
   logger.info('deleting allergy by id = ' + id);
   const patient = await AllergyModel.deleteAllergy(id);
   if (!patient) {

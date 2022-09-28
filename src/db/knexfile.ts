@@ -1,5 +1,5 @@
-import dotenv from "dotenv";
-import type { Knex } from "knex";
+import dotenv from 'dotenv';
+import type { Knex } from 'knex';
 
 dotenv.config({
   path: `${__dirname}/../../.env`,
@@ -19,7 +19,7 @@ const config: { [key: string]: Knex.Config } = {
       max: 10,
     },
     migrations: {
-      tableName: "knex_migrations",
+      tableName: 'knex_migrations',
     },
   },
   production: {
@@ -36,7 +36,7 @@ const config: { [key: string]: Knex.Config } = {
       max: 10,
     },
     migrations: {
-      tableName: "knex_migrations",
+      tableName: 'knex_migrations',
     },
   },
 };

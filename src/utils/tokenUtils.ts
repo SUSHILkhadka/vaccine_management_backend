@@ -3,21 +3,14 @@ import { EXPIRY_TIME_ACCESS_TOKEN } from '../constants/common';
 import { IDataAtToken } from '../domains/IDataAtToken';
 
 export const getAccessToken = (tokenDataToBeEncrypted: IDataAtToken) => {
-  const accessToken = jwt.sign(
-    tokenDataToBeEncrypted,
-    process.env.JWT_SECRET as string,
-    {
-      expiresIn: EXPIRY_TIME_ACCESS_TOKEN,
-    }
-  );
+  const accessToken = jwt.sign(tokenDataToBeEncrypted, process.env.JWT_SECRET as string, {
+    expiresIn: EXPIRY_TIME_ACCESS_TOKEN,
+  });
   return accessToken;
 };
 
 export const getRefreshToken = (tokenDataToBeEncrypted: IDataAtToken) => {
-  const refreshToken = jwt.sign(
-    tokenDataToBeEncrypted,
-    process.env.JWT_TOKEN_SECRET as string
-  );
+  const refreshToken = jwt.sign(tokenDataToBeEncrypted, process.env.JWT_TOKEN_SECRET as string);
   return refreshToken;
 };
 
@@ -34,9 +27,7 @@ export const decryptedTokenDataFromAccessToken = (accessToken: string) => {
   };
 };
 
-export const decryptTokenDataFromRefreshToken = (
-  refreshToken: string
-): IDataAtToken => {
+export const decryptTokenDataFromRefreshToken = (refreshToken: string): IDataAtToken => {
   const { id, name, email, expiryDateForRefreshToken } = jwt.verify(
     refreshToken,
     process.env.JWT_TOKEN_SECRET as string

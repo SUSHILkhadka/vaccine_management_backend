@@ -3,27 +3,16 @@ import { IRequestWithTokenData } from '../domains/IRequestWithTokenData';
 import { InvalidAllergyIdInURL, InvalidVaccineIdInURL } from '../errors/errors';
 import * as AllergyService from '../services/allergyService';
 import { getAllergyDataFromRequest } from '../utils/bodyParser';
-import allergySchema from '../validations/allergySchema';
-import formValidator from '../validations/formValidator';
 
-export const addAllergy = (
-  req: IRequestWithTokenData,
-  res: Response,
-  next: NextFunction
-) => {
+export const addAllergy = (req: IRequestWithTokenData, res: Response, next: NextFunction) => {
   const allergyFormData = getAllergyDataFromRequest(req);
-  formValidator(allergyFormData, allergySchema);
 
   AllergyService.addAllergy(allergyFormData)
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };
 
-export const getAllAllergiesByVaccineId = (
-  req: IRequestWithTokenData,
-  res: Response,
-  next: NextFunction
-) => {
+export const getAllAllergiesByVaccineId = (req: IRequestWithTokenData, res: Response, next: NextFunction) => {
   const vaccineId = +req.params.vaccineId;
   if (isNaN(vaccineId)) {
     return next(InvalidVaccineIdInURL);
@@ -33,18 +22,13 @@ export const getAllAllergiesByVaccineId = (
     .catch((err) => next(err));
 };
 
-export const updateAllergy = (
-  req: IRequestWithTokenData,
-  res: Response,
-  next: NextFunction
-) => {
+export const updateAllergy = (req: IRequestWithTokenData, res: Response, next: NextFunction) => {
   const id = +req.params.allergyId;
   if (isNaN(id)) {
     return next(InvalidAllergyIdInURL);
   }
 
   const alleryFormData = getAllergyDataFromRequest(req);
-  formValidator(alleryFormData, allergySchema);
 
   AllergyService.updateAllergy({
     ...alleryFormData,
@@ -53,11 +37,7 @@ export const updateAllergy = (
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };
-export const deleteAllergy = (
-  req: IRequestWithTokenData,
-  res: Response,
-  next: NextFunction
-) => {
+export const deleteAllergy = (req: IRequestWithTokenData, res: Response, next: NextFunction) => {
   const id = +req.params.allergyId;
   if (isNaN(id)) {
     return next(InvalidAllergyIdInURL);

@@ -5,21 +5,13 @@ import { IAllergy, IAllergyToInsert } from '../domains/IAllergy';
 class User {
   private static table = TABLE_NAME_ALLERGY;
 
-  public static async addAllergy(
-    allergyToInsert: IAllergyToInsert
-  ): Promise<IAllergy> {
-    const allergies = await db(this.table)
-      .insert(allergyToInsert)
-      .returning('*');
+  public static async addAllergy(allergyToInsert: IAllergyToInsert): Promise<IAllergy> {
+    const allergies = await db(this.table).insert(allergyToInsert).returning('*');
     return allergies[0];
   }
 
-  public static async getAllAllergiesByVaccineId(
-    vaccineId: number
-  ): Promise<IAllergy[]> {
-    const allergies = await db(this.table)
-      .where({ vaccineId: vaccineId })
-      .returning('*');
+  public static async getAllAllergiesByVaccineId(vaccineId: number): Promise<IAllergy[]> {
+    const allergies = await db(this.table).where({ vaccineId: vaccineId }).returning('*');
     return allergies;
   }
 
@@ -31,10 +23,7 @@ class User {
     return updatedAllergy[0];
   }
   public static async deleteAllergy(id: number): Promise<IAllergy> {
-    const deletedAllergy = await db(this.table)
-      .where('id', id)
-      .del()
-      .returning('*');
+    const deletedAllergy = await db(this.table).where('id', id).del().returning('*');
     return deletedAllergy[0];
   }
 }

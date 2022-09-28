@@ -4,7 +4,7 @@ import CustomError from '../misc/CustomError';
 import cloudinary from '../config/cloudinary';
 import logger from '../misc/Logger';
 import upload from '../config/multer';
-import fs from "fs"
+import fs from 'fs';
 const router = Router();
 /**
  * request has data in multipart/form data form
@@ -14,7 +14,7 @@ const router = Router();
 router.post('/', upload.array('keyForFileObject'), uploadFiles);
 
 /**
- * 
+ *
  * @param req user's request with files
  * @param res response of server
  * @param next next function
@@ -26,7 +26,7 @@ async function uploadFiles(req: any, res: Response, next: NextFunction) {
     const filePath = req.files[0].path;
     logger.info('uploading file');
     const uploadResponse = await cloudinary.uploader.upload(filePath, {
-    //   upload_preset: 'contacts-photo',
+      //   upload_preset: 'contacts-photo',
       upload_preset: 'vaccine',
     });
 
@@ -34,7 +34,7 @@ async function uploadFiles(req: any, res: Response, next: NextFunction) {
     logger.info('successfully uploaded image to cloudinary');
     return res.json({ url: uploadResponse.url });
   } catch (e) {
-    fs.unlinkSync(req.files[0].path);
+    if (req.files[0] && req.files[0].path) fs.unlinkSync(req.files[0].path);
     logger.error('upload failed');
     return next(new CustomError(`${e}`, StatusCodes.INTERNAL_SERVER_ERROR));
   }

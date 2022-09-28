@@ -12,11 +12,7 @@ import { decryptedTokenDataFromAccessToken } from '../utils/tokenUtils';
  * @param next NextFunction
  * @returns next function if access token is valid and adds token data to request.
  */
-const authenticate = async (
-  req: IRequestWithTokenData,
-  res: Response,
-  next: NextFunction
-) => {
+const authenticate = async (req: IRequestWithTokenData, res: Response, next: NextFunction) => {
   if (!req.headers.authorization) {
     return next(InValidAccessTokenError);
   }
