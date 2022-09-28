@@ -6,7 +6,6 @@ import UserModel from '../models/userModel';
 import { comparePlainPasswordAndHash, generatePasswordHash } from '../utils/passwordUtils';
 
 export const createUser = async (userToInsert: IUserToInsert): Promise<ISuccess<IUser>> => {
-  console.log('user to insert', userToInsert);
   const { password } = userToInsert;
   const passwordHash = await generatePasswordHash(password);
   logger.info('creating user');

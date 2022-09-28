@@ -26,8 +26,6 @@ const storage = multer.diskStorage({
   },
 });
 
-// const memStorage = multer.memoryStorage();
-
 const upload = multer({ storage });
 
 export default upload;
