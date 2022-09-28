@@ -1,5 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
 import * as yup from 'yup';
+import { IAllergyToInsert } from '../domains/IAllergy';
+import { IUserToInsert, IUserToUpdate } from '../domains/IUser';
+import { IVaccineToInsert } from '../domains/IVaccine';
 import CustomError from '../misc/CustomError';
 
 /**
@@ -8,7 +11,7 @@ import CustomError from '../misc/CustomError';
  * throws error
  */
 const formValidator = (
-  inputs: any,
+  inputs: IUserToInsert | IUserToUpdate | IVaccineToInsert | IAllergyToInsert,
   schema: yup.ObjectSchema<any>
 ): string[] => {
   try {
@@ -18,10 +21,20 @@ const formValidator = (
     return [];
   } catch (err: any) {
     let allCombinedError = '';
-    err.inner.forEach((error: any) => {
-      allCombinedError += error.message + ', ';
-    });
+    for (let i = 0; i < err.inner.length; i++) {
+      allCombinedError += err.inner[i].message;
+      if (i < err.inner.length - 1) allCombinedError += ', ';
+      else allCombinedError += '.';
+    }
     throw new CustomError(allCombinedError, StatusCodes.BAD_REQUEST);
+  }
+};
+
+export const keyValueValidator = async (key: string, value: any, schema: yup.ObjectSchema<any>) => {
+  try {
+    schema.validateSyncAt(key, { [key]: value });
+  } catch (e: string | any) {
+    throw new CustomError(e, StatusCodes.BAD_REQUEST);
   }
 };
 

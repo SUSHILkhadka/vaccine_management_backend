@@ -6,4 +6,3 @@ export interface ITokens<T> {
   expiresAtRefreshToken?: number;
   message: string;
 }
-

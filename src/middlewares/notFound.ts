@@ -6,7 +6,7 @@ import { NextFunction, Request, Response } from 'express';
  * @param {Response} res
  * @param {NextFunction} next
  */
-export const notFound = (req: Request, res: Response, next: NextFunction) => {
+export const notFound = (req: Request, _res: Response, _next: NextFunction) => {
   const error = new Error(`Not Found - ${req.originalUrl}`);
   throw error;
 };

@@ -1,98 +1,42 @@
 import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import CustomError from '../misc/CustomError';
+import { InvalidVaccineIdInURL } from '../errors/errors';
 import * as VaccineService from '../services/vaccineService';
-import formValidator from '../validations/formValidator';
-import vaccineSchema from '../validations/vaccineSchema';
+import { getVaccineDataFromRequest } from '../utils/bodyParser';
 
-export const createVaccine = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const {
-    name,
-    description,
-    numberOfDoses,
-    releaseDate,
-    photoUrl,
-    isMandatory,
-  } = req.body;
-  formValidator(req.body, vaccineSchema);
+export const createVaccine = (req: Request, res: Response, next: NextFunction) => {
+  const vaccineFormData = getVaccineDataFromRequest(req);
 
-  VaccineService.createVaccine({
-    name,
-    description,
-    numberOfDoses,
-    releaseDate,
-    photoUrl,
-    isMandatory,
-  })
+  VaccineService.createVaccine(vaccineFormData)
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };
 
-export const getAllVaccines = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const getAllVaccines = (req: Request, res: Response, next: NextFunction) => {
   VaccineService.getAllVaccines()
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };
 
-export const updateVaccine = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const {
-    name,
-    description,
-    numberOfDoses,
-    releaseDate,
-    photoUrl,
-    isMandatory,
-  } = req.body;
-  formValidator(req.body, vaccineSchema);
+export const updateVaccine = (req: Request, res: Response, next: NextFunction) => {
+  const vaccineFormData = getVaccineDataFromRequest(req);
 
   const id = +req.params.vaccineId;
   if (isNaN(id)) {
-    return next(
-      new CustomError(
-        'vaccine id is not a valid number',
-        StatusCodes.BAD_REQUEST
-      )
-    );
+    return next(InvalidVaccineIdInURL);
   }
 
   VaccineService.updateVaccine({
-    name,
-    description,
-    numberOfDoses,
-    releaseDate,
-    photoUrl,
-    isMandatory,
+    ...vaccineFormData,
     id: +id,
   })
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };
 
-export const deleteVaccine = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const deleteVaccine = (req: Request, res: Response, next: NextFunction) => {
   const id = +req.params.vaccineId;
   if (isNaN(id)) {
-    return next(
-      new CustomError(
-        'vaccine id is not a valid number',
-        StatusCodes.BAD_REQUEST
-      )
-    );
+    return next(InvalidVaccineIdInURL);
   }
 
   VaccineService.deleteVaccine(id)

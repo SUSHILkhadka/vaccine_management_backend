@@ -1,11 +1,12 @@
 import { NextFunction, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import jwt from 'jsonwebtoken';
-import { IDataAtToken } from '../domains/IDataAtToken';
 import { IRequestWithTokenData } from '../domains/IRequestWithTokenData';
-import CustomError from '../misc/CustomError';
+import { InValidAccessTokenError } from '../errors/errors';
+import logger from '../misc/Logger';
+import { decryptedTokenDataFromAccessToken } from '../utils/tokenUtils';
+
+// import { decryptedTokenDataFromAccessToken } from '../utils/tokenUtils';
 /**
- * 
+ *
  * @param req user Request with access token in header
  * @param res Response
  * @param next NextFunction
@@ -13,18 +14,18 @@ import CustomError from '../misc/CustomError';
  */
 const authenticate = async (req: IRequestWithTokenData, res: Response, next: NextFunction) => {
   if (!req.headers.authorization) {
-    const err = new CustomError('invalid access token', StatusCodes.UNAUTHORIZED);
-    return next(err);
+    return next(InValidAccessTokenError);
   }
   try {
-  const accessToken = req.headers.authorization.split(' ')[1];
-    const dataAtToken =  jwt.verify(accessToken, process.env.JWT_SECRET as string) as IDataAtToken;
+    const accessToken = req.headers.authorization.split(' ')[1];
+    const dataAtToken = decryptedTokenDataFromAccessToken(accessToken);
+
     req.id = dataAtToken.id;
     req.email = dataAtToken.email;
     return next();
-  } catch {
-    const err = new CustomError('invalid access token', StatusCodes.UNAUTHORIZED);
-    return next(err);
+  } catch (e) {
+    logger.info('verification failed for jwt');
+    return next(InValidAccessTokenError);
   }
 };
 export default authenticate;

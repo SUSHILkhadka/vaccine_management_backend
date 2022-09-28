@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import * as userController from '../controllers/userController';
 import { validate } from '../middlewares/validate';
-import signupSchema from '../validations/schemas/signupSchema';
+import editUserSchema from '../validations/schemas/editUserSchema';
 
 const router = Router();
-router.post('/', validate(signupSchema), userController.createUser);
+router.put('/', validate(editUserSchema), userController.updateUser);
+router.delete('/', userController.deleteUser);
 export default router;

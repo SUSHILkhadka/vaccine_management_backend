@@ -1,71 +1,48 @@
 import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
 import { IRequestWithTokenData } from '../domains/IRequestWithTokenData';
-import CustomError from '../misc/CustomError';
+import { IUserToUpdate } from '../domains/IUser';
+import { InValidAccessTokenError } from '../errors/errors';
 import * as UserService from '../services/userService';
-import editUserSchema from '../validations/editUserSchema';
-import formValidator from '../validations/formValidator';
-import signupSchema from '../validations/signupSchema';
+import { getSiginFormDataFromRequest } from '../utils/bodyParser';
+import { keyValueValidator } from '../validations/formValidator';
+import signupSchema from '../validations/schemas/signupSchema';
 
 export const createUser = (req: Request, res: Response, next: NextFunction) => {
-  const { name, email, password } = req.body;
-  formValidator(req.body, signupSchema);
+  const signinFormData = getSiginFormDataFromRequest(req);
 
-  if (!name || !email || !password) {
-    throw new CustomError(
-      'name, email and password are required',
-      StatusCodes.BAD_REQUEST
-    );
-  }
-  UserService.createUser({ name, email, password })
+  UserService.createUser(signinFormData)
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };
 
-export const getUserByEmail = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const checkIfEmailAlreadyExists = (req: Request, res: Response, next: NextFunction) => {
   const { email } = req.body;
-  if (!email) {
-    throw new CustomError('email is required', StatusCodes.BAD_REQUEST);
-  }
-  UserService.getUserByEmail(email)
+  keyValueValidator('email', email, signupSchema);
+  UserService.checkIfEmailAlreadyExists(email)
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };
 
-export const updateUser = (
-  req: IRequestWithTokenData,
-  res: Response,
-  next: NextFunction
-) => {
-  const { name, password, oldPassword } = req.body;
+export const updateUser = (req: IRequestWithTokenData, res: Response, next: NextFunction) => {
+  const { name, password, oldPassword } = req.body as IUserToUpdate;
   const id = req.id;
   const email = req.email;
-  formValidator(req.body, editUserSchema);
+
   if (!id || !email) {
-    return next(
-      new CustomError('invalid access token', StatusCodes.UNAUTHORIZED)
-    );
+    return next(InValidAccessTokenError);
   }
 
   UserService.updateUser({ name, password, id, email }, oldPassword)
     .then((data) => res.json(data))
     .catch((err) => next(err));
 };
-export const deleteUser = (
-  req: IRequestWithTokenData,
-  res: Response,
-  next: NextFunction
-) => {
+
+export const deleteUser = (req: IRequestWithTokenData, res: Response, next: NextFunction) => {
   const id = req.id;
   if (!id) {
-    return next(
-      new CustomError('invalid access token', StatusCodes.UNAUTHORIZED)
-    );
+    return next(InValidAccessTokenError);
   }
+
   UserService.deleteUser(id)
     .then((data) => res.json(data))
     .catch((err) => next(err));

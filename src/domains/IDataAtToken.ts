@@ -1,5 +1,6 @@
 export interface IDataAtToken {
   id: number;
-  name:string;
+  name: string;
   email: string;
+  expiryDateForRefreshToken: number;
 }

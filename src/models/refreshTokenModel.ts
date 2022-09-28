@@ -1,8 +1,9 @@
+import { TABLE_NAME_REFRESH_TOKEN } from '../constants/common';
 import db from '../db/db';
 import IRefreshToken from '../domains/IRefreshToken';
 
 class RefreshTokenModel {
-  public static table = 'refresh_token';
+  public static table = TABLE_NAME_REFRESH_TOKEN;
   public static async getAllRefreshTokens(): Promise<IRefreshToken[]> {
     const refreshTokens = await db(this.table).select().returning('*');
     return refreshTokens;
@@ -24,7 +25,11 @@ class RefreshTokenModel {
   }
 
   public static async deleteExpiredRefreshTokenByUserId(userId: number): Promise<IRefreshToken> {
-    const deletedRefreshToken = await db(this.table).where('id', userId).andWhere('expiresAt', '<', Date.now()).del().returning('*');
+    const deletedRefreshToken = await db(this.table)
+      .where('id', userId)
+      .andWhere('expiresAt', '<', Date.now())
+      .del()
+      .returning('*');
     return deletedRefreshToken[0];
   }
 }
