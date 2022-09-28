@@ -21,6 +21,9 @@ dotenv.config();
 export const login = async (email: string, password: string): Promise<ITokens<User>> => {
   logger.info('logging in');
   const user = await UserModel.getUserByEmail(email);
+  if (!user) {
+    throw InvaliCredentialsError;
+  }
   const isPasswordMatch = await comparePlainPasswordAndHash(password, user.password);
   if (!user || !isPasswordMatch) {
     throw InvaliCredentialsError;
