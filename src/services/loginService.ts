@@ -45,7 +45,6 @@ export const login = async (email: string, password: string): Promise<ITokens<Us
   await RefreshTokenModel.deleteExpiredRefreshTokenByUserId(user.id);
 
   //adding new refresh token to database
-
   await RefreshTokenModel.createRefreshToken({
     refreshToken,
     id: user.id,
