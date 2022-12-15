@@ -20,6 +20,7 @@ const formValidator = (
     });
     return [];
   } catch (err: any) {
+
     let allCombinedError = '';
     for (let i = 0; i < err.inner.length; i++) {
       allCombinedError += err.inner[i].message;
