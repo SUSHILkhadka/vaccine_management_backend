@@ -1,5 +1,5 @@
-import { IAllergy } from '../interface/IAllergy';
-import { IVaccine } from '../interface/IVaccine';
+import { IAllergy } from '@server/domains/IAllergy';
+import { IVaccine } from '@server/domains/IVaccine';
 
 export const vaccine: IVaccine = {
   id: 24,
